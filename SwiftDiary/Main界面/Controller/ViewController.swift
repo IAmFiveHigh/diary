@@ -14,14 +14,15 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    var newModel: CellModel?
+    
     fileprivate var dataArray = [CellModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        registerCell()
-        
+                
         setNavigationItem()
+        
     }
 
     //MARK:- 设置navigationBar
@@ -39,12 +40,26 @@ class ViewController: UIViewController {
 
     }
     
-    //MARK:- tableView注册cell
-    fileprivate func registerCell() {
-        
-        tableView.register(UINib.init(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
-    }
+    //storyboard中已经注册cell了 不需要代码注册了
     
+//    fileprivate func registerCell() {
+//        
+//        tableView.register(UINib.init(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+//    }
+//    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let newModel = newModel {
+            
+            dataArray.append(newModel)
+            
+            
+            print(dataArray)
+            tableView.reloadData()
+        }
+    }
 }
 
 //MARK:- tableView协议方法
