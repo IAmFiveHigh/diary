@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 let screenWidth = UIScreen.main.bounds.width
 let screenHeight = UIScreen.main.bounds.height
@@ -19,13 +20,21 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var newModel: CellModel?
+
+    /// 根据appdelegate获取context
+    var mycontext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    /// coredata查询数据的请求
+    let request = NSFetchRequest<NSFetchRequestResult>(entityName: "DiaryDetail")
     
     fileprivate var dataArray = [CellModel]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         setNavigationItem()
+        
+        lookForObject()
         
     }
 
@@ -44,13 +53,38 @@ class ViewController: UIViewController {
 
     }
     
-    //storyboard中已经注册cell了 不需要代码注册了
+    //MARK: - 从数据库获取存储数据
+    fileprivate func lookForObject() {
+        
+        do {
+            let result = try mycontext.fetch(request) as! [NSManagedObject]
+            for element in result {
+                let dayWeek = element.value(forKey: "dayWeek") as! String
+                let yearMonth = element.value(forKey: "yearMonth") as! String
+                let hourMin = element.value(forKey: "hourMin") as! String
+                let detailText = element.value(forKey: "detailText") as! String
+                let location = element.value(forKey: "location") as! String
+                
+                let model = CellModel(date: "\(dayWeek)/\(yearMonth)/\(hourMin)", detailText: detailText, location: location)
+                dataArray.append(model)
+            }
+            
+        } catch  {
+            
+            fatalError()
+        }
+        
+        tableView.reloadData()
+    }
     
-//    fileprivate func registerCell() {
-//        
-//        tableView.register(UINib.init(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
-//    }
-//    
+    /*storyboard中已经注册cell了 不需要代码注册了
+    
+    fileprivate func registerCell() {
+     
+        tableView.register(UINib.init(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+    }
+    */
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -58,6 +92,20 @@ class ViewController: UIViewController {
         if let newModel = newModel {
             
             dataArray.append(newModel)
+            
+            do {
+                let inserInfo = NSEntityDescription.insertNewObject(forEntityName: "DiaryDetail", into: mycontext)
+                inserInfo.setValue(newModel.date1, forKey: "dayWeek")
+                inserInfo.setValue(newModel.date2, forKey: "yearMonth")
+                inserInfo.setValue(newModel.date3, forKey: "hourMin")
+                inserInfo.setValue(newModel.detailText, forKey: "detailText")
+                inserInfo.setValue(newModel.location, forKey: "location")
+                
+                try mycontext.save()
+            } catch  {
+                
+                fatalError()
+            }
             
             
             print(dataArray)
