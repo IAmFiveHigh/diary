@@ -33,7 +33,7 @@ class TableViewCell: UITableViewCell {
         
         detailLabel.numberOfLines = 0
         
-        
+        detailLabel.sizeToFit()
     }
     
     func updateCellWith(model: CellModel) {
@@ -42,13 +42,9 @@ class TableViewCell: UITableViewCell {
         dateLabel2.text = model.date2
         dateLabel3.text = model.date3
         detailLabel.text = model.detailText
+        
         location.text = model.location
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
 
 }

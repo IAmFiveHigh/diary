@@ -8,6 +8,10 @@
 
 import UIKit
 
+let screenWidth = UIScreen.main.bounds.width
+let screenHeight = UIScreen.main.bounds.height
+// cell之间的间隙
+let cellBottomMargin: CGFloat = 10
 let KNavigationBarColor: (CGFloat, CGFloat, CGFloat) = (121, 193, 76)
 
 class ViewController: UIViewController {
@@ -77,5 +81,17 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.updateCellWith(model: model)
         
         return cell
+    }
+    
+    //设置cell高度
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        let model = dataArray[indexPath.row]
+        let labelString = NSAttributedString(string: model.detailText, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 15)])
+        //125 是cell中时间label和时间轴的宽度
+        let rect:CGRect = labelString.boundingRect(with: CGSize(width: screenWidth - 125, height: 500), options: NSStringDrawingOptions.usesLineFragmentOrigin, context: nil)
+        
+        //42.5是底部时间label的高度 
+        return rect.height + 20.5 + cellBottomMargin
     }
 }

@@ -35,7 +35,7 @@ class CreateNewController: UIViewController {
         //1 处理时间
         let date = Date()
         let dateFormat = DateFormatter()
-        dateFormat.dateFormat = "yyyy.MM/dd /eee/hh:mm"
+        dateFormat.dateFormat = "yyyy.MM/dd日/eee/hh:mm"
         var dateString = dateFormat.string(from: date)
         let weekArray = ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"]
         let tmpArray = dateString.components(separatedBy: "/")
